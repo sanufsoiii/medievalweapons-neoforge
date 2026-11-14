@@ -7,6 +7,7 @@ import java.util.Optional;
 import net.medievalweapons.MedievalMain;
 import net.medievalweapons.entity.FranciscaEntity;
 import net.medievalweapons.entity.JavelinEntity;
+import net.medievalweapons.init.ItemInit;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
@@ -16,6 +17,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.projectile.ItemSupplier;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.neoforged.bus.api.IEventBus;
@@ -61,7 +63,10 @@ public final class ServerSmoke {
             }
         }
         long recipes = server.getRecipeManager().getRecipeIds().filter(id -> MedievalMain.MOD_ID.equals(id.getNamespace())).count();
-        LOGGER.info("[medievalweapons-port] SERVER_SMOKE_DATA items={} recipes={}", items, recipes);
+        // Creative tab contents come from BuildCreativeModeTabContentsEvent (ItemInit#addItemGroupEntries).
+        CreativeModeTab tab = BuiltInRegistries.CREATIVE_MODE_TAB.getOrThrow(ItemInit.MEDIEVALWEAPONS_ITEM_GROUP);
+        tab.buildContents(new CreativeModeTab.ItemDisplayParameters(level.enabledFeatures(), false, server.registryAccess()));
+        LOGGER.info("[medievalweapons-port] SERVER_SMOKE_DATA items={} recipes={} creativeTab={}", items, recipes, tab.getDisplayItems().size());
 
         int index = 0;
         for (EntityType<?> type : BuiltInRegistries.ENTITY_TYPE) {

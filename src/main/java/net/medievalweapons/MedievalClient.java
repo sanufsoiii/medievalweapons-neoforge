@@ -5,6 +5,7 @@ import net.medievalweapons.config.MedievalConfig;
 import net.medievalweapons.init.ModelInit;
 import net.medievalweapons.init.RenderInit;
 import net.medievalweapons.network.MedievalClientPacket;
+import net.medievalweapons.port.ClientSelfCheck;
 import net.medievalweapons.port.assets.AssetNotice;
 import net.medievalweapons.port.assets.OriginalAssetsPackFinder;
 import net.minecraft.client.Minecraft;
@@ -49,6 +50,7 @@ public class MedievalClient {
         titleReached = true;
         LOGGER.info("[medievalweapons-port] TITLE_SCREEN_REACHED");
         if (Boolean.getBoolean("medievalweapons.port.exitOnTitle")) {
+            ClientSelfCheck.run();
             Thread exitThread = new Thread(() -> {
                 try {
                     Thread.sleep(5000L);
