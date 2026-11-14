@@ -1,0 +1,14 @@
+{
+  "medievalweapons.port.assets.pack_name": "Medieval Weapons: оригинальные ассеты",
+  "medievalweapons.port.assets.compat_pack_name": "Medieval Weapons: оригинальные ассеты (совместимость с %s)",
+  "medievalweapons.port.assets.pack_description": "Текстуры, модели и звуки из вашего оригинального jar Medieval Weapons",
+  "medievalweapons.port.assets.title": "Medieval Weapons — неофициальный порт для NeoForge",
+  "medievalweapons.port.assets.text": "Оригинальные текстуры, модели и звуки защищены авторским правом (All Rights Reserved), поэтому их нет в порте. Скачай оригинальный мод для Fabric 1.21.1 (версия 1.7.0) и положи jar в папку resourcepacks — порт подключит из него только графику и звуки. Ставить его в mods не нужно.",
+  "medievalweapons.port.assets.curseforge": "Скачать оригинал (CurseForge)",
+  "medievalweapons.port.assets.modrinth": "Скачать оригинал (Modrinth)",
+  "medievalweapons.port.assets.open_folder": "Открыть папку resourcepacks",
+  "medievalweapons.port.assets.recheck": "Проверить снова",
+  "medievalweapons.port.assets.continue": "Продолжить без ассетов",
+  "medievalweapons.port.assets.dont_show": "Больше не показывать",
+  "medievalweapons.port.assets.not_found": "Файл не найден в resourcepacks"
+}
