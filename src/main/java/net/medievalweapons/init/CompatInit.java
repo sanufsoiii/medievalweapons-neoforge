@@ -1,61 +1,58 @@
 package net.medievalweapons.init;
 
-import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
-import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
-import net.fabricmc.loader.api.FabricLoader;
 import net.medievalweapons.MedievalMain;
 import net.medievalweapons.compat.CompatItems;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.repository.Pack;
+import net.minecraft.server.packs.repository.PackSource;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.ModList;
+import net.neoforged.neoforge.event.AddPackFindersEvent;
 
 public class CompatInit {
 
-    public static final boolean isBetterCombatLoaded = FabricLoader.getInstance().isModLoaded("bettercombat");
-    public static final Boolean isLevelZLoaded = FabricLoader.getInstance().isModLoaded("levelz");
+    public static final boolean isBetterCombatLoaded = ModList.get().isLoaded("bettercombat");
+    public static final Boolean isLevelZLoaded = ModList.get().isLoaded("levelz");
 
-    public static void init() {
-        if (CompatItems.isAdditionalAdditionsLoaded) {
-            ResourceManagerHelper.registerBuiltinResourcePack(MedievalMain.identifierOf("additionaladditions_medievalweapons_compat"), FabricLoader.getInstance().getModContainer("medievalweapons").orElseThrow(),
-                    ResourcePackActivationType.DEFAULT_ENABLED);
+    // Fabric: ResourceManagerHelper.registerBuiltinResourcePack(id, container, DEFAULT_ENABLED) in onInitialize().
+    // NeoForge: built-in packs are offered through AddPackFindersEvent (mod bus) whenever a pack repository is built.
+    public static void init(IEventBus modBus) {
+        modBus.addListener(AddPackFindersEvent.class, CompatInit::onAddPackFinders);
+    }
+
+    private static void onAddPackFinders(AddPackFindersEvent event) {
+        // The nested packs of the original jar contain only data (recipes, weapon attributes) in this port;
+        // their models and translations are All Rights Reserved and come from the original jar (port/assets).
+        if (event.getPackType() != PackType.SERVER_DATA) {
+            return;
         }
-        if (CompatItems.isBetterEndLoaded) {
-            ResourceManagerHelper.registerBuiltinResourcePack(MedievalMain.identifierOf("betterend_medievalweapons_compat"), FabricLoader.getInstance().getModContainer("medievalweapons").orElseThrow(),
-                    ResourcePackActivationType.DEFAULT_ENABLED);
-        }
-        if (CompatItems.isBetterNetherLoaded) {
-            ResourceManagerHelper.registerBuiltinResourcePack(MedievalMain.identifierOf("betternether_medievalweapons_compat"), FabricLoader.getInstance().getModContainer("medievalweapons").orElseThrow(),
-                    ResourcePackActivationType.DEFAULT_ENABLED);
-        }
-        if (CompatItems.isBYGLoaded) {
-            ResourceManagerHelper.registerBuiltinResourcePack(MedievalMain.identifierOf("byg_medievalweapons_compat"), FabricLoader.getInstance().getModContainer("medievalweapons").orElseThrow(),
-                    ResourcePackActivationType.DEFAULT_ENABLED);
-        }
+        // TODO: Additional Additions compat pack excluded: the NeoForge build of Additional Additions has none of the
+        // materials and items this pack uses (see _excluded/compat-unavailable/resourcepacks).
+        // TODO: Better End compat pack excluded: the mod has no NeoForge 1.21.1 build.
+        // TODO: Better Nether compat pack excluded: the mod has no NeoForge 1.21.1 build.
+        // TODO: Oh The Biomes You'll Go compat pack excluded: the mod has no NeoForge 1.21.1 build.
         if (CompatItems.isDeeperDarkerLoaded) {
-            ResourceManagerHelper.registerBuiltinResourcePack(MedievalMain.identifierOf("deeperdarker_medievalweapons_compat"), FabricLoader.getInstance().getModContainer("medievalweapons").orElseThrow(),
-                    ResourcePackActivationType.DEFAULT_ENABLED);
+            addBuiltinPack(event, "deeperdarker_medievalweapons_compat");
         }
-        if (CompatItems.isDragonLootLoaded) {
-            ResourceManagerHelper.registerBuiltinResourcePack(MedievalMain.identifierOf("dragonloot_medievalweapons_compat"), FabricLoader.getInstance().getModContainer("medievalweapons").orElseThrow(),
-                    ResourcePackActivationType.DEFAULT_ENABLED);
-        }
-        if (CompatItems.isEarlyStageLoaded) {
-            ResourceManagerHelper.registerBuiltinResourcePack(MedievalMain.identifierOf("earlystage_medievalweapons_compat"), FabricLoader.getInstance().getModContainer("medievalweapons").orElseThrow(),
-                    ResourcePackActivationType.DEFAULT_ENABLED);
-        }
+        // TODO: DragonLoot compat pack excluded: the mod has no NeoForge 1.21.1 build.
+        // TODO: EarlyStage compat pack excluded: the mod has no NeoForge 1.21.1 build.
         if (CompatItems.isMythicMetalsLoaded) {
-            ResourceManagerHelper.registerBuiltinResourcePack(MedievalMain.identifierOf("mythicmetals_medievalweapons_compat"), FabricLoader.getInstance().getModContainer("medievalweapons").orElseThrow(),
-                    ResourcePackActivationType.DEFAULT_ENABLED);
+            addBuiltinPack(event, "mythicmetals_medievalweapons_compat");
         }
         if (CompatItems.isMythicUpgradesLoaded) {
-            ResourceManagerHelper.registerBuiltinResourcePack(MedievalMain.identifierOf("mythicupgrades_medievalweapons_compat"), FabricLoader.getInstance().getModContainer("medievalweapons").orElseThrow(),
-                    ResourcePackActivationType.DEFAULT_ENABLED);
+            addBuiltinPack(event, "mythicupgrades_medievalweapons_compat");
         }
-        if (CompatItems.isOblivionLoaded) {
-            ResourceManagerHelper.registerBuiltinResourcePack(MedievalMain.identifierOf("oblivion_medievalweapons_compat"), FabricLoader.getInstance().getModContainer("medievalweapons").orElseThrow(),
-                    ResourcePackActivationType.DEFAULT_ENABLED);
-        }
+        // TODO: Oblivion compat pack excluded: the mod has no NeoForge 1.21.1 build.
         if (CompatItems.isParadiseLostLoaded) {
-            ResourceManagerHelper.registerBuiltinResourcePack(MedievalMain.identifierOf("paradise_lost_medievalweapons_compat"), FabricLoader.getInstance().getModContainer("medievalweapons").orElseThrow(),
-                    ResourcePackActivationType.DEFAULT_ENABLED);
+            addBuiltinPack(event, "paradise_lost_medievalweapons_compat");
         }
+    }
+
+    private static void addBuiltinPack(AddPackFindersEvent event, String name) {
+        // PackSource.BUILT_IN is added to new and existing worlds automatically, like Fabric's DEFAULT_ENABLED.
+        event.addPackFinders(MedievalMain.identifierOf("resourcepacks/" + name), PackType.SERVER_DATA, Component.literal("medievalweapons/" + name), PackSource.BUILT_IN, false,
+                Pack.Position.TOP);
     }
 
 }
