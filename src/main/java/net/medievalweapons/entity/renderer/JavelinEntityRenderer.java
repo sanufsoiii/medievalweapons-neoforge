@@ -2,8 +2,6 @@ package net.medievalweapons.entity.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.medievalweapons.entity.JavelinEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -16,7 +14,6 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemDisplayContext;
 
 @SuppressWarnings("deprecation")
-@Environment(EnvType.CLIENT)
 public class JavelinEntityRenderer extends EntityRenderer<JavelinEntity> {
 
     private final ItemRenderer itemRenderer;

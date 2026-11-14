@@ -5,8 +5,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.At;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.medievalweapons.init.SoundInit;
 import net.medievalweapons.init.TagInit;
 import net.medievalweapons.item.BigAxeItem;
@@ -14,7 +12,6 @@ import net.medievalweapons.item.LongSwordItem;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 
-@Environment(EnvType.CLIENT)
 @Mixin(LivingEntity.class)
 public class ClientLivingEntityMixin {
 

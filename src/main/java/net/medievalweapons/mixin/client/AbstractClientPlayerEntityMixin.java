@@ -8,8 +8,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import org.spongepowered.asm.mixin.injection.At;
 
-import net.fabricmc.api.Environment;
-import net.fabricmc.api.EnvType;
 import net.medievalweapons.init.ItemInit;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
@@ -19,7 +17,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 
-@Environment(EnvType.CLIENT)
 @Mixin(AbstractClientPlayer.class)
 public abstract class AbstractClientPlayerEntityMixin extends Player {
 

@@ -8,8 +8,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.At;
 
-import net.fabricmc.api.Environment;
-import net.fabricmc.api.EnvType;
 import net.medievalweapons.init.CompatInit;
 import net.medievalweapons.init.TagInit;
 import net.medievalweapons.item.BigAxeItem;
@@ -22,7 +20,6 @@ import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 
-@Environment(EnvType.CLIENT)
 @Mixin(HumanoidModel.class)
 public abstract class BipedEntityModelMixin<T extends LivingEntity> extends AgeableListModel<T> implements ArmedModel, HeadedModel {
     @Shadow
