@@ -12,6 +12,7 @@
     "LivingEntityMixin",
     "MobEntityMixin",
     "PlayerEntityMixin",
+    "PlayerShieldPortMixin",
     "ServerAdvancementLoaderMixin",
     "TagGroupLoaderMixin"
   ],

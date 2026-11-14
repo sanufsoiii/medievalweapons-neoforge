@@ -10,6 +10,8 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.common.ItemAbilities;
+import net.neoforged.neoforge.common.ItemAbility;
 import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.TooltipFlag;
@@ -35,6 +37,13 @@ public class BigAxeItem extends SwordItem {
     @Override
     public UseAnim getUseAnimation(ItemStack stack) {
         return UseAnim.BLOCK;
+    }
+
+    // NeoForge: LivingEntity#isBlocking() checks canPerformAction(SHIELD_BLOCK) instead of the vanilla
+    // getUseAnimation() == UseAnim.BLOCK check, so the BLOCK use animation alone no longer makes the item block.
+    @Override
+    public boolean canPerformAction(ItemStack stack, ItemAbility itemAbility) {
+        return itemAbility == ItemAbilities.SHIELD_BLOCK || super.canPerformAction(stack, itemAbility);
     }
 
     @Override
