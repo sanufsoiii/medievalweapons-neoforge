@@ -1,11 +1,9 @@
 package net.medievalweapons.init;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.medievalweapons.MedievalMain;
 import net.medievalweapons.compat.CompatRender;
+import net.medievalweapons.entity.FranciscaEntity;
+import net.medievalweapons.entity.JavelinEntity;
 import net.medievalweapons.entity.renderer.FranciscaEntityRenderer;
 import net.medievalweapons.entity.renderer.JavelinEntityRenderer;
 import net.medievalweapons.init.ParticleInit.HealingAuraParticle;
@@ -14,28 +12,41 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.DyeColor;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import java.util.HashMap;
 import java.util.Map;
 
-@Environment(EnvType.CLIENT)
 public class RenderInit {
 
     public static final Map<DyeColor, RenderType> CUSTOM_GLINT = customGlints();
 
-    public static void init() {
+    // Fabric: EntityRendererRegistry / ParticleFactoryRegistry calls in onInitializeClient().
+    // NeoForge: the same registrations inside EntityRenderersEvent.RegisterRenderers and RegisterParticleProvidersEvent (mod bus).
+    public static void init(IEventBus modBus) {
+        modBus.addListener(EntityRenderersEvent.RegisterRenderers.class, RenderInit::registerRenderers);
+        modBus.addListener(RegisterParticleProvidersEvent.class, RenderInit::registerParticles);
+    }
+
+    @SuppressWarnings("unchecked")
+    private static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
         for (Map.Entry<ResourceLocation, EntityType> entry : EntityInit.ENTITY_TYPES.entrySet()) {
             if (entry.getKey().getPath().contains("javelin")) {
-                EntityRendererRegistry.register(entry.getValue(), JavelinEntityRenderer::new);
+                event.registerEntityRenderer((EntityType<JavelinEntity>) entry.getValue(), JavelinEntityRenderer::new);
             } else if (entry.getKey().getPath().contains("francisca")) {
-                EntityRendererRegistry.register(entry.getValue(), FranciscaEntityRenderer::new);
+                event.registerEntityRenderer((EntityType<FranciscaEntity>) entry.getValue(), FranciscaEntityRenderer::new);
             }
         }
-        // Particle
-        ParticleFactoryRegistry.getInstance().register(ParticleInit.HEALING_AURA_PARTICLE, HealingAuraParticle.Factory::new);
         // Compat
-        CompatRender.loadRenderer();
+        CompatRender.loadRenderer(event);
+    }
+
+    private static void registerParticles(RegisterParticleProvidersEvent event) {
+        // Particle
+        event.registerSpriteSet(ParticleInit.HEALING_AURA_PARTICLE, HealingAuraParticle.Factory::new);
     }
 
     private static Map<DyeColor, RenderType> customGlints() {

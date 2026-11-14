@@ -1,9 +1,5 @@
 package net.medievalweapons.init;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.particle.v1.FabricSpriteProvider;
-import net.fabricmc.fabric.api.particle.v1.FabricParticleTypes;
 import net.medievalweapons.MedievalMain;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
@@ -14,15 +10,15 @@ import net.minecraft.util.Mth;
 
 public class ParticleInit {
 
-    public static final SimpleParticleType HEALING_AURA_PARTICLE = FabricParticleTypes.simple();
+    // Fabric: FabricParticleTypes.simple() == new SimpleParticleType(false)
+    public static final SimpleParticleType HEALING_AURA_PARTICLE = new SimpleParticleType(false);
 
     public static void init() {
         Registry.register(BuiltInRegistries.PARTICLE_TYPE, MedievalMain.identifierOf("healing_aura_particle"), HEALING_AURA_PARTICLE);
     }
 
-    @Environment(EnvType.CLIENT)
     static class HealingAuraParticle extends TextureSheetParticle {
-        private final FabricSpriteProvider sprites;
+        private final SpriteSet sprites;
         private boolean reachedGround;
 
         public HealingAuraParticle(ClientLevel clientWorld, double d, double e, double f, double g, double h, double i, SpriteSet sprites) {
@@ -36,7 +32,7 @@ public class ParticleInit {
             this.lifetime = (int) (20.0D / ((double) this.random.nextFloat() * 0.8D + 0.2D));
             this.reachedGround = false;
             this.hasPhysics = true;
-            this.sprites = (FabricSpriteProvider) sprites;
+            this.sprites = sprites;
             this.setSpriteFromAge(sprites);
         }
 
@@ -86,11 +82,10 @@ public class ParticleInit {
             return this.quadSize * Mth.clamp(((float) this.age + tickDelta) / (float) this.lifetime * 32.0F, 0.0F, 1.0F);
         }
 
-        @Environment(EnvType.CLIENT)
         public static class Factory implements ParticleProvider<SimpleParticleType> {
-            private final FabricSpriteProvider sprites;
+            private final SpriteSet sprites;
 
-            public Factory(FabricSpriteProvider sprites) {
+            public Factory(SpriteSet sprites) {
                 this.sprites = sprites;
             }
 
