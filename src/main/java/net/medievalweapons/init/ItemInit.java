@@ -1,7 +1,5 @@
 package net.medievalweapons.init;
 
-import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
-import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.medievalweapons.MedievalMain;
 import net.medievalweapons.compat.CompatItems;
 import net.medievalweapons.compat.CompatRecipes;
@@ -28,6 +26,7 @@ import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.Tiers;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
+import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -45,6 +44,8 @@ public class ItemInit {
     public static final Set<Item> CUSTOM_MODEL_ITEMS = new HashSet<>();
     // Map
     public static final Map<ResourceLocation, Item> ITEMS = new LinkedHashMap<>();
+    // Creative tab contents in the order the original added them (Fabric: one ItemGroupEvents.modifyEntriesEvent listener per item)
+    private static final List<Item> ITEM_GROUP_ENTRIES = new ArrayList<>();
 
     public record WeaponType(
             String suffix,
@@ -113,7 +114,7 @@ public class ItemInit {
 
     public static void init() {
         Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, MEDIEVALWEAPONS_ITEM_GROUP,
-                FabricItemGroup.builder().icon(() -> new ItemStack(THALLEOUS_SWORD)).title(Component.translatable("item.medievalweapons.item_group")).build());
+                CreativeModeTab.builder().icon(() -> new ItemStack(THALLEOUS_SWORD)).title(Component.translatable("item.medievalweapons.item_group")).build());
 
         for (Tiers toolMaterial : Tiers.values()) {
             for (WeaponType type : TYPES) {
@@ -139,7 +140,7 @@ public class ItemInit {
         for (ResourceLocation id : ITEMS.keySet()) {
             Registry.register(BuiltInRegistries.ITEM, id, ITEMS.get(id));
             addCustomModelItem(ITEMS.get(id));
-            ItemGroupEvents.modifyEntriesEvent(MEDIEVALWEAPONS_ITEM_GROUP).register(entries -> entries.accept(ITEMS.get(id)));
+            ITEM_GROUP_ENTRIES.add(ITEMS.get(id));
         }
     }
 
@@ -150,8 +151,17 @@ public class ItemInit {
     }
 
     private static Item register(ResourceLocation id, Item item) {
-        ItemGroupEvents.modifyEntriesEvent(MEDIEVALWEAPONS_ITEM_GROUP).register(entries -> entries.accept(item));
+        ITEM_GROUP_ENTRIES.add(item);
         return Registry.register(BuiltInRegistries.ITEM, id, item);
+    }
+
+    // BuildCreativeModeTabContentsEvent (mod bus) replaces Fabric's ItemGroupEvents.modifyEntriesEvent(MEDIEVALWEAPONS_ITEM_GROUP).
+    public static void addItemGroupEntries(BuildCreativeModeTabContentsEvent event) {
+        if (MEDIEVALWEAPONS_ITEM_GROUP.equals(event.getTabKey())) {
+            for (Item item : ITEM_GROUP_ENTRIES) {
+                event.accept(item);
+            }
+        }
     }
 
     public static String getFormattedName(Tiers mat, String suffix) {
@@ -178,9 +188,9 @@ public class ItemInit {
     private static void registerWeaponEntity(String id, Item item) {
         EntityType type = null;
         if (item instanceof FranciscaItem) {
-            type = EntityType.Builder.<FranciscaEntity>of((entity, world) -> new FranciscaEntity(entity, world, (FranciscaItem) item), MobCategory.MISC).sized(0.5F, 0.5F).build();
+            type = EntityType.Builder.<FranciscaEntity>of((entity, world) -> new FranciscaEntity(entity, world, (FranciscaItem) item), MobCategory.MISC).sized(0.5F, 0.5F).build(MedievalMain.identifierOf(id).toString());
         } else if (item instanceof JavelinItem) {
-            type = EntityType.Builder.<JavelinEntity>of((entity, world) -> new JavelinEntity(entity, world, (JavelinItem) item), MobCategory.MISC).sized(0.5F, 0.5F).build();
+            type = EntityType.Builder.<JavelinEntity>of((entity, world) -> new JavelinEntity(entity, world, (JavelinItem) item), MobCategory.MISC).sized(0.5F, 0.5F).build(MedievalMain.identifierOf(id).toString());
         }
         EntityInit.register(id, type);
     }

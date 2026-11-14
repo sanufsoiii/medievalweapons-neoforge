@@ -39,12 +39,17 @@ public class EntityInit {
         return type;
     }
 
+    // Fabric API's EntityType.Builder#build() has no id; vanilla 1.21.1 only has build(String), whose id is used for the
+    // data fixer lookup only. The compat items are registered (ItemInit.init) before their entity types are created,
+    // and each entity type has the same id as its item.
     public static EntityType<FranciscaEntity> createFrancisca(FranciscaItem item) {
-        return EntityType.Builder.<FranciscaEntity>of((entity, world) -> new FranciscaEntity(entity, world, item), MobCategory.MISC).sized(0.5F, 0.5F).build();
+        return EntityType.Builder.<FranciscaEntity>of((entity, world) -> new FranciscaEntity(entity, world, item), MobCategory.MISC).sized(0.5F, 0.5F)
+                .build(BuiltInRegistries.ITEM.getKey(item).toString());
     }
 
     public static EntityType<JavelinEntity> createJavelin(JavelinItem item) {
-        return EntityType.Builder.<JavelinEntity>of((entity, world) -> new JavelinEntity(entity, world, item), MobCategory.MISC).sized(0.5F, 0.5F).build();
+        return EntityType.Builder.<JavelinEntity>of((entity, world) -> new JavelinEntity(entity, world, item), MobCategory.MISC).sized(0.5F, 0.5F)
+                .build(BuiltInRegistries.ITEM.getKey(item).toString());
     }
 
 }
