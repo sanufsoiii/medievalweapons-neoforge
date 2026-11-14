@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Optional;
 
 import net.medievalweapons.MedievalMain;
+import net.medievalweapons.entity.FranciscaEntity;
+import net.medievalweapons.entity.JavelinEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
@@ -13,6 +15,8 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.projectile.ItemSupplier;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
@@ -95,20 +99,22 @@ public final class ServerSmoke {
         done = true;
         ServerLevel level = server.overworld();
 
-        // Save/load round trip: exercises addAdditionalSaveData/readAdditionalSaveData of every spawned entity.
+        // Save/load round trip of the mod's own data ("francisca"/"javelin" item tags). The entities spawned above come from
+        // EntityType#create (like /summon); in the original those have no pickup item until they are loaded from NBT
+        // (AbstractArrow's field initializer calls getDefaultPickupItem() before the subclass field is set), so saving them
+        // fails on Fabric as well. The round trip therefore uses the thrown-weapon constructors the mod itself uses.
         int roundTrips = 0;
-        for (Entity entity : SPAWNED) {
+        for (Entity spawned : SPAWNED) {
+            ResourceLocation id = BuiltInRegistries.ENTITY_TYPE.getKey(spawned.getType());
+            ItemStack stack = ((ItemSupplier) spawned).getItem().copy();
+            Entity thrown = spawned instanceof FranciscaEntity ? new FranciscaEntity(level, spawned.getX(), spawned.getY(), spawned.getZ(), stack)
+                    : new JavelinEntity(level, spawned.getX(), spawned.getY(), spawned.getZ(), stack);
             CompoundTag tag = new CompoundTag();
-            if (!entity.save(tag)) {
-                // save() refuses removed entities (e.g. a projectile that despawned); saveWithoutId still exercises the data.
-                tag = entity.saveWithoutId(new CompoundTag());
-                tag.putString("id", BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType()).toString());
-            }
-            Optional<Entity> copy = EntityType.create(tag, level);
-            if (copy.isPresent() && copy.get().getType() == entity.getType()) {
+            Optional<Entity> copy = thrown.save(tag) ? EntityType.create(tag, level) : Optional.empty();
+            if (copy.isPresent() && copy.get().getType() == spawned.getType() && ItemStack.matches(((ItemSupplier) copy.get()).getItem(), stack)) {
                 roundTrips++;
             } else {
-                LOGGER.error("[medievalweapons-port] SERVER_SMOKE_FAIL NBT round trip of {}", BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType()));
+                LOGGER.error("[medievalweapons-port] SERVER_SMOKE_FAIL NBT round trip of {}", id);
             }
         }
         long alive = SPAWNED.stream().filter(Entity::isAlive).count();
