@@ -2,8 +2,7 @@ package net.medievalweapons.compat;
 
 import com.kyanite.deeperdarker.util.DDTiers;
 import com.mythicmetals.item.tools.MythicToolMaterials;
-import net.fabricmc.loader.api.FabricLoader;
-import net.id.paradiselost.items.tools.ParadiseLostToolMaterials;
+import net.id.paradise_lost.item.tool.ParadiseLostToolMaterials;
 import net.medievalweapons.MedievalMain;
 import net.medievalweapons.init.ItemInit;
 import net.medievalweapons.item.*;
@@ -12,7 +11,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.SwordItem;
-import net.trique.mythicupgrades.item.materials.MUToolMaterials;
+import net.neoforged.fml.ModList;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -20,19 +19,19 @@ import java.util.Set;
 
 public class CompatItems {
 
-    private static final FabricLoader fabricLoader = FabricLoader.getInstance();
+    private static final ModList modList = ModList.get();
 
-    public static Boolean isDragonLootLoaded = fabricLoader.isModLoaded("dragonloot");
-    public static Boolean isBetterEndLoaded = fabricLoader.isModLoaded("betterend");
-    public static Boolean isBetterNetherLoaded = fabricLoader.isModLoaded("betternether");
-    public static Boolean isMythicMetalsLoaded = fabricLoader.isModLoaded("mythicmetals");
-    public static Boolean isParadiseLostLoaded = fabricLoader.isModLoaded("paradise_lost");
-    public static Boolean isBYGLoaded = fabricLoader.isModLoaded("byg");
-    public static Boolean isAdditionalAdditionsLoaded = fabricLoader.isModLoaded("additionaladditions");
-    public static Boolean isMythicUpgradesLoaded = fabricLoader.isModLoaded("mythicupgrades");
-    public static Boolean isDeeperDarkerLoaded = fabricLoader.isModLoaded("deeperdarker");
-    public static Boolean isEarlyStageLoaded = fabricLoader.isModLoaded("earlystage");
-    public static Boolean isOblivionLoaded = fabricLoader.isModLoaded("oblivion");
+    public static Boolean isDragonLootLoaded = modList.isLoaded("dragonloot");
+    public static Boolean isBetterEndLoaded = modList.isLoaded("betterend");
+    public static Boolean isBetterNetherLoaded = modList.isLoaded("betternether");
+    public static Boolean isMythicMetalsLoaded = modList.isLoaded("mythicmetals");
+    public static Boolean isParadiseLostLoaded = modList.isLoaded("paradise_lost");
+    public static Boolean isBYGLoaded = modList.isLoaded("byg");
+    public static Boolean isAdditionalAdditionsLoaded = modList.isLoaded("additionaladditions");
+    public static Boolean isMythicUpgradesLoaded = modList.isLoaded("mythicupgrades");
+    public static Boolean isDeeperDarkerLoaded = modList.isLoaded("deeperdarker");
+    public static Boolean isEarlyStageLoaded = modList.isLoaded("earlystage");
+    public static Boolean isOblivionLoaded = modList.isLoaded("oblivion");
 
     public static final Map<String, Set<String>> MATERIALS_BY_MOD = new LinkedHashMap<>();
 
@@ -234,105 +233,105 @@ public class CompatItems {
         if (isMythicUpgradesLoaded) {
             ItemInit.ITEMS
                     .put(MedievalMain.identifierOf("ruby_netherite_small_axe"),
-                            new SmallAxeItem(MUToolMaterials.RUBY,
-                                    new Item.Properties().attributes(SwordItem.createAttributes(MUToolMaterials.RUBY, 5, -2.9f).withModifierAdded(Attributes.ATTACK_KNOCKBACK,
+                            new SmallAxeItem(net.trique.mythicupgrades.item.MythicToolMaterials.RUBY,
+                                    new Item.Properties().attributes(SwordItem.createAttributes(net.trique.mythicupgrades.item.MythicToolMaterials.RUBY, 5, -2.9f).withModifierAdded(Attributes.ATTACK_KNOCKBACK,
                                                     new AttributeModifier(SmallAxeItem.ATTACK_BONUS_MODIFIER_ID, 1.0D, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND))
                                             .fireResistant()));
             ItemInit.ITEMS
                     .put(MedievalMain.identifierOf("ruby_netherite_long_sword"),
-                            new LongSwordItem(MUToolMaterials.RUBY,
-                                    new Item.Properties().attributes(SwordItem.createAttributes(MUToolMaterials.RUBY, 6, -3.0f).withModifierAdded(Attributes.ENTITY_INTERACTION_RANGE,
+                            new LongSwordItem(net.trique.mythicupgrades.item.MythicToolMaterials.RUBY,
+                                    new Item.Properties().attributes(SwordItem.createAttributes(net.trique.mythicupgrades.item.MythicToolMaterials.RUBY, 6, -3.0f).withModifierAdded(Attributes.ENTITY_INTERACTION_RANGE,
                                                     new AttributeModifier(LongSwordItem.ATTACK_BONUS_MODIFIER_ID, 0.8f, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND))
                                             .fireResistant()));
             ItemInit.ITEMS
                     .put(MedievalMain.identifierOf("ruby_netherite_dagger"),
-                            new DaggerItem(MUToolMaterials.RUBY,
-                                    new Item.Properties().attributes(SwordItem.createAttributes(MUToolMaterials.RUBY, 2, -2.0f).withModifierAdded(Attributes.ENTITY_INTERACTION_RANGE,
+                            new DaggerItem(net.trique.mythicupgrades.item.MythicToolMaterials.RUBY,
+                                    new Item.Properties().attributes(SwordItem.createAttributes(net.trique.mythicupgrades.item.MythicToolMaterials.RUBY, 2, -2.0f).withModifierAdded(Attributes.ENTITY_INTERACTION_RANGE,
                                                     new AttributeModifier(DaggerItem.ATTACK_BONUS_MODIFIER_ID, -1.0f, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND))
                                             .fireResistant()));
             ItemInit.ITEMS
                     .put(MedievalMain.identifierOf("ruby_netherite_big_axe"),
-                            new BigAxeItem(MUToolMaterials.RUBY,
-                                    new Item.Properties().attributes(SwordItem.createAttributes(MUToolMaterials.RUBY, 6, -3.4f).withModifierAdded(Attributes.SWEEPING_DAMAGE_RATIO,
+                            new BigAxeItem(net.trique.mythicupgrades.item.MythicToolMaterials.RUBY,
+                                    new Item.Properties().attributes(SwordItem.createAttributes(net.trique.mythicupgrades.item.MythicToolMaterials.RUBY, 6, -3.4f).withModifierAdded(Attributes.SWEEPING_DAMAGE_RATIO,
                                                     new AttributeModifier(BigAxeItem.ATTACK_BONUS_MODIFIER_ID, 1.0D, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND))
                                             .fireResistant()));
             ItemInit.ITEMS
                     .put(MedievalMain.identifierOf("ruby_netherite_lance"),
-                            new LanceItem(MUToolMaterials.RUBY,
-                                    new Item.Properties().attributes(SwordItem.createAttributes(MUToolMaterials.RUBY, 3, -3.2f).withModifierAdded(Attributes.ENTITY_INTERACTION_RANGE,
+                            new LanceItem(net.trique.mythicupgrades.item.MythicToolMaterials.RUBY,
+                                    new Item.Properties().attributes(SwordItem.createAttributes(net.trique.mythicupgrades.item.MythicToolMaterials.RUBY, 3, -3.2f).withModifierAdded(Attributes.ENTITY_INTERACTION_RANGE,
                                                     new AttributeModifier(LanceItem.ATTACK_BONUS_MODIFIER_ID, 1.5f, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND))
                                             .fireResistant()));
             ItemInit.ITEMS.put(MedievalMain.identifierOf("ruby_netherite_healing_staff"),
-                    new HealingStaffItem(MUToolMaterials.RUBY, 5, new Item.Properties().attributes(SwordItem.createAttributes(MUToolMaterials.RUBY, 1, -3.3f)).fireResistant()));
+                    new HealingStaffItem(net.trique.mythicupgrades.item.MythicToolMaterials.RUBY, 5, new Item.Properties().attributes(SwordItem.createAttributes(net.trique.mythicupgrades.item.MythicToolMaterials.RUBY, 1, -3.3f)).fireResistant()));
             ItemInit.ITEMS
                     .put(MedievalMain.identifierOf("ruby_netherite_mace"),
-                            new MaceItem(MUToolMaterials.RUBY, 3,
-                                    new Item.Properties().attributes(SwordItem.createAttributes(MUToolMaterials.RUBY, 4, -2.8f).withModifierAdded(Attributes.ENTITY_INTERACTION_RANGE,
+                            new MaceItem(net.trique.mythicupgrades.item.MythicToolMaterials.RUBY, 3,
+                                    new Item.Properties().attributes(SwordItem.createAttributes(net.trique.mythicupgrades.item.MythicToolMaterials.RUBY, 4, -2.8f).withModifierAdded(Attributes.ENTITY_INTERACTION_RANGE,
                                                     new AttributeModifier(LongSwordItem.ATTACK_BONUS_MODIFIER_ID, -0.5f, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND))
                                             .fireResistant()));
-            RUBY_NETHERITE_FRANCISCA_ITEM = new FranciscaItem(MUToolMaterials.RUBY, () -> CompatEntities.RUBY_NETHERITE_FRANCISCA,
-                    new Item.Properties().attributes(SwordItem.createAttributes(MUToolMaterials.RUBY, 1, -2.6f)));
-            RUBY_NETHERITE_JAVELIN_ITEM = new JavelinItem(MUToolMaterials.RUBY, () -> CompatEntities.RUBY_NETHERITE_JAVELIN,
-                    new Item.Properties().attributes(SwordItem.createAttributes(MUToolMaterials.RUBY, 1, -2.6f)).fireResistant());
+            RUBY_NETHERITE_FRANCISCA_ITEM = new FranciscaItem(net.trique.mythicupgrades.item.MythicToolMaterials.RUBY, () -> CompatEntities.RUBY_NETHERITE_FRANCISCA,
+                    new Item.Properties().attributes(SwordItem.createAttributes(net.trique.mythicupgrades.item.MythicToolMaterials.RUBY, 1, -2.6f)));
+            RUBY_NETHERITE_JAVELIN_ITEM = new JavelinItem(net.trique.mythicupgrades.item.MythicToolMaterials.RUBY, () -> CompatEntities.RUBY_NETHERITE_JAVELIN,
+                    new Item.Properties().attributes(SwordItem.createAttributes(net.trique.mythicupgrades.item.MythicToolMaterials.RUBY, 1, -2.6f)).fireResistant());
             ItemInit.ITEMS.put(MedievalMain.identifierOf("ruby_netherite_francisca"), RUBY_NETHERITE_FRANCISCA_ITEM);
             ItemInit.ITEMS.put(MedievalMain.identifierOf("ruby_netherite_javelin"), RUBY_NETHERITE_JAVELIN_ITEM);
             ItemInit.ITEMS.put(MedievalMain.identifierOf("ruby_netherite_ninjato"),
-                    new NinjatoItem(MUToolMaterials.RUBY, new Item.Properties().attributes(SwordItem.createAttributes(MUToolMaterials.RUBY, 2, -2.1f)).fireResistant()));
+                    new NinjatoItem(net.trique.mythicupgrades.item.MythicToolMaterials.RUBY, new Item.Properties().attributes(SwordItem.createAttributes(net.trique.mythicupgrades.item.MythicToolMaterials.RUBY, 2, -2.1f)).fireResistant()));
             ItemInit.ITEMS.put(MedievalMain.identifierOf("ruby_netherite_sickle"),
-                    new SickleItem(MUToolMaterials.RUBY, new Item.Properties().attributes(SwordItem.createAttributes(MUToolMaterials.RUBY, 2, -2.2f)).fireResistant()));
+                    new SickleItem(net.trique.mythicupgrades.item.MythicToolMaterials.RUBY, new Item.Properties().attributes(SwordItem.createAttributes(net.trique.mythicupgrades.item.MythicToolMaterials.RUBY, 2, -2.2f)).fireResistant()));
             ItemInit.ITEMS.put(MedievalMain.identifierOf("ruby_netherite_rapier"),
-                    new RapierItem(MUToolMaterials.RUBY, 3, new Item.Properties().attributes(SwordItem.createAttributes(MUToolMaterials.RUBY, 2, -2.0f)).fireResistant()));
+                    new RapierItem(net.trique.mythicupgrades.item.MythicToolMaterials.RUBY, 3, new Item.Properties().attributes(SwordItem.createAttributes(net.trique.mythicupgrades.item.MythicToolMaterials.RUBY, 2, -2.0f)).fireResistant()));
 
             ItemInit.ITEMS
                     .put(MedievalMain.identifierOf("sapphire_netherite_small_axe"),
-                            new SmallAxeItem(MUToolMaterials.SAPPHIRE,
-                                    new Item.Properties().attributes(SwordItem.createAttributes(MUToolMaterials.SAPPHIRE, 5, -2.9f).withModifierAdded(Attributes.ATTACK_KNOCKBACK,
+                            new SmallAxeItem(net.trique.mythicupgrades.item.MythicToolMaterials.SAPPHIRE,
+                                    new Item.Properties().attributes(SwordItem.createAttributes(net.trique.mythicupgrades.item.MythicToolMaterials.SAPPHIRE, 5, -2.9f).withModifierAdded(Attributes.ATTACK_KNOCKBACK,
                                                     new AttributeModifier(SmallAxeItem.ATTACK_BONUS_MODIFIER_ID, 1.0D, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND))
                                             .fireResistant()));
             ItemInit.ITEMS.put(MedievalMain.identifierOf("sapphire_netherite_long_sword"),
-                    new LongSwordItem(MUToolMaterials.SAPPHIRE,
+                    new LongSwordItem(net.trique.mythicupgrades.item.MythicToolMaterials.SAPPHIRE,
                             new Item.Properties()
-                                    .attributes(SwordItem.createAttributes(MUToolMaterials.SAPPHIRE, 6, -3.0f).withModifierAdded(Attributes.ENTITY_INTERACTION_RANGE,
+                                    .attributes(SwordItem.createAttributes(net.trique.mythicupgrades.item.MythicToolMaterials.SAPPHIRE, 6, -3.0f).withModifierAdded(Attributes.ENTITY_INTERACTION_RANGE,
                                             new AttributeModifier(LongSwordItem.ATTACK_BONUS_MODIFIER_ID, 0.8f, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND))
                                     .fireResistant()));
             ItemInit.ITEMS.put(MedievalMain.identifierOf("sapphire_netherite_dagger"),
-                    new DaggerItem(MUToolMaterials.SAPPHIRE,
+                    new DaggerItem(net.trique.mythicupgrades.item.MythicToolMaterials.SAPPHIRE,
                             new Item.Properties()
-                                    .attributes(SwordItem.createAttributes(MUToolMaterials.SAPPHIRE, 2, -2.0f).withModifierAdded(Attributes.ENTITY_INTERACTION_RANGE,
+                                    .attributes(SwordItem.createAttributes(net.trique.mythicupgrades.item.MythicToolMaterials.SAPPHIRE, 2, -2.0f).withModifierAdded(Attributes.ENTITY_INTERACTION_RANGE,
                                             new AttributeModifier(DaggerItem.ATTACK_BONUS_MODIFIER_ID, -1.0f, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND))
                                     .fireResistant()));
             ItemInit.ITEMS
                     .put(MedievalMain.identifierOf("sapphire_netherite_big_axe"),
-                            new BigAxeItem(MUToolMaterials.SAPPHIRE,
-                                    new Item.Properties().attributes(SwordItem.createAttributes(MUToolMaterials.SAPPHIRE, 6, -3.4f).withModifierAdded(Attributes.SWEEPING_DAMAGE_RATIO,
+                            new BigAxeItem(net.trique.mythicupgrades.item.MythicToolMaterials.SAPPHIRE,
+                                    new Item.Properties().attributes(SwordItem.createAttributes(net.trique.mythicupgrades.item.MythicToolMaterials.SAPPHIRE, 6, -3.4f).withModifierAdded(Attributes.SWEEPING_DAMAGE_RATIO,
                                                     new AttributeModifier(BigAxeItem.ATTACK_BONUS_MODIFIER_ID, 1.0D, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND))
                                             .fireResistant()));
             ItemInit.ITEMS.put(MedievalMain.identifierOf("sapphire_netherite_lance"),
-                    new LanceItem(MUToolMaterials.SAPPHIRE,
+                    new LanceItem(net.trique.mythicupgrades.item.MythicToolMaterials.SAPPHIRE,
                             new Item.Properties()
-                                    .attributes(SwordItem.createAttributes(MUToolMaterials.SAPPHIRE, 3, -3.2f).withModifierAdded(Attributes.ENTITY_INTERACTION_RANGE,
+                                    .attributes(SwordItem.createAttributes(net.trique.mythicupgrades.item.MythicToolMaterials.SAPPHIRE, 3, -3.2f).withModifierAdded(Attributes.ENTITY_INTERACTION_RANGE,
                                             new AttributeModifier(LanceItem.ATTACK_BONUS_MODIFIER_ID, 1.5f, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND))
                                     .fireResistant()));
             ItemInit.ITEMS.put(MedievalMain.identifierOf("sapphire_netherite_healing_staff"),
-                    new HealingStaffItem(MUToolMaterials.SAPPHIRE, 5, new Item.Properties().attributes(SwordItem.createAttributes(MUToolMaterials.SAPPHIRE, 1, -3.3f)).fireResistant()));
+                    new HealingStaffItem(net.trique.mythicupgrades.item.MythicToolMaterials.SAPPHIRE, 5, new Item.Properties().attributes(SwordItem.createAttributes(net.trique.mythicupgrades.item.MythicToolMaterials.SAPPHIRE, 1, -3.3f)).fireResistant()));
             ItemInit.ITEMS.put(MedievalMain.identifierOf("sapphire_netherite_mace"),
-                    new MaceItem(MUToolMaterials.SAPPHIRE, 3,
+                    new MaceItem(net.trique.mythicupgrades.item.MythicToolMaterials.SAPPHIRE, 3,
                             new Item.Properties()
-                                    .attributes(SwordItem.createAttributes(MUToolMaterials.SAPPHIRE, 4, -2.8f).withModifierAdded(Attributes.ENTITY_INTERACTION_RANGE,
+                                    .attributes(SwordItem.createAttributes(net.trique.mythicupgrades.item.MythicToolMaterials.SAPPHIRE, 4, -2.8f).withModifierAdded(Attributes.ENTITY_INTERACTION_RANGE,
                                             new AttributeModifier(LongSwordItem.ATTACK_BONUS_MODIFIER_ID, -0.5f, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND))
                                     .fireResistant()));
-            SAPPHIRE_NETHERITE_FRANCISCA_ITEM = new FranciscaItem(MUToolMaterials.SAPPHIRE, () -> CompatEntities.SAPPHIRE_NETHERITE_FRANCISCA,
-                    new Item.Properties().attributes(SwordItem.createAttributes(MUToolMaterials.SAPPHIRE, 1, -2.6f)));
-            SAPPHIRE_NETHERITE_JAVELIN_ITEM = new JavelinItem(MUToolMaterials.SAPPHIRE, () -> CompatEntities.SAPPHIRE_NETHERITE_JAVELIN,
-                    new Item.Properties().attributes(SwordItem.createAttributes(MUToolMaterials.SAPPHIRE, 1, -2.6f)).fireResistant());
+            SAPPHIRE_NETHERITE_FRANCISCA_ITEM = new FranciscaItem(net.trique.mythicupgrades.item.MythicToolMaterials.SAPPHIRE, () -> CompatEntities.SAPPHIRE_NETHERITE_FRANCISCA,
+                    new Item.Properties().attributes(SwordItem.createAttributes(net.trique.mythicupgrades.item.MythicToolMaterials.SAPPHIRE, 1, -2.6f)));
+            SAPPHIRE_NETHERITE_JAVELIN_ITEM = new JavelinItem(net.trique.mythicupgrades.item.MythicToolMaterials.SAPPHIRE, () -> CompatEntities.SAPPHIRE_NETHERITE_JAVELIN,
+                    new Item.Properties().attributes(SwordItem.createAttributes(net.trique.mythicupgrades.item.MythicToolMaterials.SAPPHIRE, 1, -2.6f)).fireResistant());
             ItemInit.ITEMS.put(MedievalMain.identifierOf("sapphire_netherite_francisca"), SAPPHIRE_NETHERITE_FRANCISCA_ITEM);
             ItemInit.ITEMS.put(MedievalMain.identifierOf("sapphire_netherite_javelin"), SAPPHIRE_NETHERITE_JAVELIN_ITEM);
             ItemInit.ITEMS.put(MedievalMain.identifierOf("sapphire_netherite_ninjato"),
-                    new NinjatoItem(MUToolMaterials.SAPPHIRE, new Item.Properties().attributes(SwordItem.createAttributes(MUToolMaterials.SAPPHIRE, 2, -2.1f)).fireResistant()));
+                    new NinjatoItem(net.trique.mythicupgrades.item.MythicToolMaterials.SAPPHIRE, new Item.Properties().attributes(SwordItem.createAttributes(net.trique.mythicupgrades.item.MythicToolMaterials.SAPPHIRE, 2, -2.1f)).fireResistant()));
             ItemInit.ITEMS.put(MedievalMain.identifierOf("sapphire_netherite_sickle"),
-                    new SickleItem(MUToolMaterials.SAPPHIRE, new Item.Properties().attributes(SwordItem.createAttributes(MUToolMaterials.SAPPHIRE, 2, -2.2f)).fireResistant()));
+                    new SickleItem(net.trique.mythicupgrades.item.MythicToolMaterials.SAPPHIRE, new Item.Properties().attributes(SwordItem.createAttributes(net.trique.mythicupgrades.item.MythicToolMaterials.SAPPHIRE, 2, -2.2f)).fireResistant()));
             ItemInit.ITEMS.put(MedievalMain.identifierOf("sapphire_netherite_rapier"),
-                    new RapierItem(MUToolMaterials.SAPPHIRE, 3, new Item.Properties().attributes(SwordItem.createAttributes(MUToolMaterials.SAPPHIRE, 2, -2.0f)).fireResistant()));
+                    new RapierItem(net.trique.mythicupgrades.item.MythicToolMaterials.SAPPHIRE, 3, new Item.Properties().attributes(SwordItem.createAttributes(net.trique.mythicupgrades.item.MythicToolMaterials.SAPPHIRE, 2, -2.0f)).fireResistant()));
 
             ItemInit.MATERIAL_STRINGS.add("ruby_netherite");
             ItemInit.MATERIAL_STRINGS.add("sapphire_netherite");

@@ -1,8 +1,5 @@
 package net.medievalweapons.entity;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.levelz.util.BonusHelper;
 import net.medievalweapons.init.CompatInit;
 import net.medievalweapons.init.EntityInit;
 import net.medievalweapons.item.FranciscaItem;
@@ -58,7 +55,6 @@ public class FranciscaEntity extends AbstractArrow implements ItemSupplier {
         return this.francisca.copy();
     }
 
-    @Environment(EnvType.CLIENT)
     public boolean enchantingGlint() {
         return this.entityData.get(ENCHANTMENT_GLINT);
     }
@@ -73,7 +69,10 @@ public class FranciscaEntity extends AbstractArrow implements ItemSupplier {
         }
 
         if (CompatInit.isLevelZLoaded && owner instanceof Player playerEntity) {
-            BonusHelper.bowBonus(playerEntity,this);
+            // TODO: LevelZ bow bonus (original: BonusHelper.bowBonus(playerEntity, this)) is not applied:
+            // LevelZ has no NeoForge 1.21.1 build to link against yet. When it exists, move
+            // _excluded/compat-pending/net/medievalweapons/compat/LevelZCompat.java into src and call
+            // LevelZCompat.bowBonus(playerEntity, this) here.
         }
 
         DamageSource damageSource = createDamageSource(this, owner == null ? this : owner);
@@ -132,7 +131,6 @@ public class FranciscaEntity extends AbstractArrow implements ItemSupplier {
     }
 
     @Override
-    @Environment(EnvType.CLIENT)
     public boolean shouldRender(double cameraX, double cameraY, double cameraZ) {
         return true;
     }

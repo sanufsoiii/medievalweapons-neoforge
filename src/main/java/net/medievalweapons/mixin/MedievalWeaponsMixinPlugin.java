@@ -7,7 +7,7 @@ import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
 
-import net.fabricmc.loader.api.FabricLoader;
+import net.neoforged.fml.loading.LoadingModList;
 
 public class MedievalWeaponsMixinPlugin implements IMixinConfigPlugin {
 
@@ -26,15 +26,21 @@ public class MedievalWeaponsMixinPlugin implements IMixinConfigPlugin {
                 || mixinClassName.contains("HealingStaffItemMixin") || mixinClassName.contains("JavelinItemMixin") || mixinClassName.contains("LanceItemMixin")
                 || mixinClassName.contains("LongSwordItemMixin") || mixinClassName.contains("MaceItemMixin") || mixinClassName.contains("NinjatoItemMixin")
                 || mixinClassName.contains("RapierItemMixin") || mixinClassName.contains("SickleItemMixin") || mixinClassName.contains("SmallAxeItemMixin"))
-                && !FabricLoader.getInstance().isModLoaded("betternether")) {
+                && !isModLoaded("betternether")) {
             return false;
         }
 
-        if ((mixinClassName.contains("ServerPlayNetworkHandlerMixin") || mixinClassName.contains("GameRendererMixin")) && !FabricLoader.getInstance().isModLoaded("reach-entity-attributes")) {
+        if ((mixinClassName.contains("ServerPlayNetworkHandlerMixin") || mixinClassName.contains("GameRendererMixin")) && !isModLoaded("reach-entity-attributes")) {
             return false;
         }
 
         return true;
+    }
+
+    // Mixins are loaded before ModList exists; LoadingModList is the only mod list available at this point.
+    private static boolean isModLoaded(String modId) {
+        LoadingModList list = LoadingModList.get();
+        return list != null && list.getModFileById(modId) != null;
     }
 
     @Override
