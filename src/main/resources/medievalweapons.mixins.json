@@ -1,0 +1,32 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "net.medievalweapons.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "plugin": "net.medievalweapons.mixin.MedievalWeaponsMixinPlugin",
+  "mixins": [
+    "AreaEffectCloudEntityMixin",
+    "BowItemMixin",
+    "EnchantmentHelperMixin",
+    "EnchantmentMixin",
+    "LivingEntityMixin",
+    "MobEntityMixin",
+    "PlayerEntityMixin",
+    "ServerAdvancementLoaderMixin",
+    "TagGroupLoaderMixin"
+  ],
+  "client": [
+    "client.AbstractClientPlayerEntityMixin",
+    "client.BipedEntityModelMixin",
+    "client.BufferBuilderStorageMixin",
+    "client.ClientLivingEntityMixin",
+    "client.DrawContextMixin",
+    "client.InGameHudMixin",
+    "client.ItemRendererMixin",
+    "client.MinecraftClientMixin",
+    "client.PersistentProjectileEntityAccessor"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

@@ -1,0 +1,107 @@
+plugins {
+    id 'java-library'
+    id 'net.neoforged.moddev' version '2.0.91'
+}
+
+version = mod_version
+group = mod_group_id
+
+base {
+    archivesName = 'medievalweapons-neoforge'
+}
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(21)
+
+neoForge {
+    version = project.neo_version
+
+    parchment {
+        mappingsVersion = project.parchment_version
+        minecraftVersion = project.parchment_minecraft_version
+    }
+
+    // src/main/resources/META-INF/accesstransformer.cfg is picked up automatically if present
+
+    runs {
+        client {
+            client()
+        }
+        server {
+            server()
+            programArgument '--nogui'
+        }
+        // Smoke test: the client must reach the title screen and exit by itself.
+        // The mod reads -Dmedievalweapons.port.exitOnTitle=true.
+        clientSmoke {
+            client()
+            systemProperty 'medievalweapons.port.exitOnTitle', 'true'
+        }
+        // Smoke test: dedicated server creates a world, spawns every mod entity type, ticks, stops.
+        // The mod reads -Dmedievalweapons.port.serverSmoke=true (run/eula.txt must contain eula=true).
+        serverSmoke {
+            server()
+            programArgument '--nogui'
+            systemProperty 'medievalweapons.port.serverSmoke', 'true'
+        }
+        configureEach {
+            systemProperty 'forge.logging.markers', 'REGISTRIES'
+            logLevel = org.slf4j.event.Level.INFO
+        }
+    }
+
+    mods {
+        "${mod_id}" {
+            sourceSet(sourceSets.main)
+        }
+    }
+}
+
+repositories {
+    maven { name = 'Shedaniel (Cloth Config)'; url = 'https://maven.shedaniel.me/' }
+    maven { name = 'Modrinth'; url = 'https://api.modrinth.com/maven' }
+    maven { name = 'CurseMaven'; url = 'https://cursemaven.com'; content { includeGroup 'curse.maven' } }
+    mavenCentral()
+}
+
+dependencies {
+    // Cloth Config (AutoConfig): required, same API as on Fabric.
+    implementation "me.shedaniel.cloth:cloth-config-neoforge:${cloth_config_version}"
+
+    // Optional material-compat mods that exist on NeoForge 1.21.1, compile-only (absent at runtime is fine).
+    compileOnly "maven.modrinth:deeperdarker:${deeperdarker_version}"
+    compileOnly "maven.modrinth:mythic-upgrades:${mythicupgrades_version}"
+    compileOnly "maven.modrinth:paradise-lost:${paradiselost_version}"
+    compileOnly "curse.maven:mythic-metals-unofficial-1800546:${mythicmetals_cf_file}"
+}
+
+var generateModMetadata = tasks.register("generateModMetadata", ProcessResources) {
+    var replaceProperties = [
+            minecraft_version      : minecraft_version,
+            minecraft_version_range: minecraft_version_range,
+            neo_version            : neo_version,
+            neo_version_range      : neo_version_range,
+            loader_version_range   : loader_version_range,
+            mod_id                 : mod_id,
+            mod_name               : mod_name,
+            mod_license            : mod_license,
+            mod_version            : mod_version,
+            mod_authors            : mod_authors,
+            mod_description        : mod_description,
+    ]
+    inputs.properties replaceProperties
+    expand replaceProperties
+    from "src/main/templates"
+    into "build/generated/sources/modMetadata"
+}
+sourceSets.main.resources.srcDir generateModMetadata
+neoForge.ideSyncTask generateModMetadata
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+    options.release = 21
+    options.compilerArgs += ['-Xmaxerrs', '100000', '-Xmaxwarns', '0']
+}
+
+jar {
+    from('LICENSE') { rename { "${it}_medievalweapons" } }
+}
