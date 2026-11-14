@@ -9,9 +9,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.At;
 
-import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.api.EnvType;
+import net.neoforged.neoforge.network.PacketDistributor;
 import net.medievalweapons.access.PlayerAccess;
 import net.medievalweapons.init.CompatInit;
 import net.medievalweapons.init.EffectInit;
@@ -30,7 +28,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 
-@Environment(EnvType.CLIENT)
 @Mixin(value = Minecraft.class, priority = 999)
 public class MinecraftClientMixin {
     @Shadow
@@ -78,7 +75,7 @@ public class MinecraftClientMixin {
 
                         switch (this.hitResult.getType()) {
                             case ENTITY: {
-                                ClientPlayNetworking.send(new AttackPacket(((EntityHitResult) this.hitResult).getEntity().getId()));
+                                PacketDistributor.sendToServer(new AttackPacket(((EntityHitResult) this.hitResult).getEntity().getId()));
                                 if (!this.player.isSpectator()) {
                                     ((PlayerAccess) this.player).doOffhandAttack(((EntityHitResult) this.hitResult).getEntity());
                                     ((PlayerAccess) this.player).resetLastAttackedOffhandTicks();
