@@ -14,7 +14,6 @@ import net.medievalweapons.item.HeroSwordItem;
 import net.medievalweapons.item.LongSwordItem;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemCooldowns;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.neoforged.neoforge.common.ItemAbility;
@@ -22,10 +21,10 @@ import net.neoforged.neoforge.common.ItemAbility;
 /**
  * Port-only mixin (not in the original). The weapons that block with UseAnim.BLOCK report the SHIELD_BLOCK item ability
  * so that NeoForge's LivingEntity#isBlocking() accepts them (vanilla checks the use animation). NeoForge also uses that
- * ability in two more places where vanilla, and therefore the original on Fabric, checks for the shield item; this mixin
- * keeps the vanilla result there for these weapons only:
- * - Player#hurtCurrentlyUsedShield: vanilla damages the used item only if it is Items.SHIELD;
- * - Player#disableShield: vanilla puts Items.SHIELD on cooldown, not the used item.
+ * ability in Player#hurtCurrentlyUsedShield, where vanilla, and therefore the original on Fabric, checks for the shield
+ * item; this mixin keeps the vanilla result there for these weapons only: the blocking weapon is not damaged and does
+ * not award the shield-used stat. Player#disableShield is not patched by NeoForge (it still cools down the used item),
+ * so it needs no wrapper.
  */
 @Mixin(Player.class)
 public abstract class PlayerShieldPortMixin {
@@ -36,11 +35,6 @@ public abstract class PlayerShieldPortMixin {
             return stack.is(Items.SHIELD);
         }
         return original.call(stack, itemAbility);
-    }
-
-    @WrapOperation(method = "disableShield", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemCooldowns;addCooldown(Lnet/minecraft/world/item/Item;I)V"))
-    private void medievalweapons$vanillaDisableShieldCooldown(ItemCooldowns cooldowns, Item item, int ticks, Operation<Void> original) {
-        original.call(cooldowns, medievalweapons$isBlockingWeapon(item) ? Items.SHIELD : item, ticks);
     }
 
     @Unique
