@@ -23,8 +23,12 @@ public final class AssetNotice {
             return;
         }
         if (Boolean.getBoolean("medievalweapons.port.exitOnTitle")) {
-            // Smoke test cannot click buttons: only report that the notice would be shown.
-            LOGGER.info("[medievalweapons-port] ASSET_NOTICE_WOULD_SHOW");
+            // The smoke test cannot click buttons, so the screen is not opened: build it (same init path as the game uses)
+            // and check that it comes out with its widgets, then report that the notice would have been shown.
+            MissingAssetsScreen screen = new MissingAssetsScreen(title);
+            net.minecraft.client.Minecraft minecraft = net.minecraft.client.Minecraft.getInstance();
+            screen.init(minecraft, minecraft.getWindow().getGuiScaledWidth(), minecraft.getWindow().getGuiScaledHeight());
+            LOGGER.info("[medievalweapons-port] ASSET_NOTICE_WOULD_SHOW widgets={}", screen.children().size());
             return;
         }
         LOGGER.info("[medievalweapons-port] ASSET_NOTICE_SHOWN");
