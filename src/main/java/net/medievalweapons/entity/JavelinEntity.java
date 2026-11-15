@@ -1,5 +1,6 @@
 package net.medievalweapons.entity;
 
+import net.medievalweapons.compat.LevelZCompat;
 import net.medievalweapons.init.CompatInit;
 import net.medievalweapons.init.EntityInit;
 import net.medievalweapons.item.JavelinItem;
@@ -87,10 +88,7 @@ public class JavelinEntity extends AbstractArrow implements ItemSupplier {
 
         Entity owner = this.getOwner();
         if (CompatInit.isLevelZLoaded && owner instanceof Player playerEntity) {
-            // TODO: LevelZ bow bonus (original: BonusHelper.bowBonus(playerEntity, this)) is not applied:
-            // LevelZ has no NeoForge 1.21.1 build to link against yet. When it exists, move
-            // _excluded/compat-pending/net/medievalweapons/compat/LevelZCompat.java into src and call
-            // LevelZCompat.bowBonus(playerEntity, this) here.
+            LevelZCompat.bowBonus(playerEntity, this);
         }
 
         DamageSource damageSource = createDamageSource(this, owner == null ? this : owner);

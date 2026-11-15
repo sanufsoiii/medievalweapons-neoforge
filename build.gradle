@@ -57,6 +57,13 @@ neoForge {
 }
 
 repositories {
+    // LevelZ and LibZ NeoForge ports, published from ../../levelz-neoforge/*/port with ./gradlew publishToMavenLocal.
+    mavenLocal {
+        content {
+            includeGroup 'net.levelz'
+            includeGroup 'net.libz' // runtime dependency of LevelZ
+        }
+    }
     maven { name = 'Shedaniel (Cloth Config)'; url = 'https://maven.shedaniel.me/' }
     maven { name = 'Modrinth'; url = 'https://api.modrinth.com/maven' }
     maven { name = 'CurseMaven'; url = 'https://cursemaven.com'; content { includeGroup 'curse.maven' } }
@@ -66,6 +73,15 @@ repositories {
 dependencies {
     // Cloth Config (AutoConfig): required, same API as on Fabric.
     implementation "me.shedaniel.cloth:cloth-config-neoforge:${cloth_config_version}"
+
+    // LevelZ (optional compat): BonusHelper#bowBonus for the thrown francisca/javelin. Absent at runtime is fine.
+    compileOnly "net.levelz:levelz-neoforge:${levelz_version}"
+    // Dev-only: put the same jar on the runtime classpath of the runs so the compat path can be exercised
+    // (MDG loads mod jars from the runtime classpath). Pass -PlevelzRuntime=false to run the no-dependency smoke;
+    // the compile classpath is unaffected.
+    if (project.findProperty('levelzRuntime') != 'false') {
+        runtimeOnly "net.levelz:levelz-neoforge:${levelz_version}"
+    }
 
     // Optional material-compat mods that exist on NeoForge 1.21.1, compile-only (absent at runtime is fine).
     compileOnly "maven.modrinth:deeperdarker:${deeperdarker_version}"

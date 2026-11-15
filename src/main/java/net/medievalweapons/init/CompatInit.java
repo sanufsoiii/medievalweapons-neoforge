@@ -13,7 +13,8 @@ import net.neoforged.neoforge.event.AddPackFindersEvent;
 public class CompatInit {
 
     public static final boolean isBetterCombatLoaded = ModList.get().isLoaded("bettercombat");
-    public static final Boolean isLevelZLoaded = ModList.get().isLoaded("levelz");
+    // Optional: only consulted behind this guard, so net.levelz classes are never loaded when the mod is absent.
+    public static final boolean isLevelZLoaded = ModList.get().isLoaded("levelz");
 
     // Fabric: ResourceManagerHelper.registerBuiltinResourcePack(id, container, DEFAULT_ENABLED) in onInitialize().
     // NeoForge: built-in packs are offered through AddPackFindersEvent (mod bus) whenever a pack repository is built.
