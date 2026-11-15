@@ -33,18 +33,24 @@ Compatibility with other mods is kept where a NeoForge 1.21.1 build of that mod 
 | Mythic Upgrades | items, entity types, recipes, data pack |
 | Paradise Lost | items, entity types, recipes, data pack |
 | Better Combat | weapon attributes are shipped as data; no code dependency |
-| LevelZ | pending: LevelZ has no NeoForge 1.21.1 build yet, the bow bonus is disabled (see `_excluded/compat-pending/`) |
+| LevelZ | optional: archery bow bonus (`BonusHelper.bowBonus`) for thrown francisca/javelin, linked against the unofficial NeoForge port; without LevelZ the class is never loaded |
 | Better End, Better Nether, DragonLoot, Oh The Biomes You'll Go, EarlyStage, Oblivion, Additional Additions | not available on NeoForge 1.21.1 (or, for Additional Additions, the NeoForge build has none of the materials and items this mod's compat pack uses), so their compat modules are kept in `_excluded/` and are not compiled |
 
 ## Building
 
-Requires JDK 21.
+Requires JDK 21. The optional LevelZ integration is compiled against the LevelZ NeoForge port, so publish that port
+first (it needs LibZ from `mavenLocal` as well):
 
 ```bash
+# once, if not done already
+(cd ../../levelz-neoforge/libz/port && ./gradlew publishToMavenLocal)
+(cd ../../levelz-neoforge/levelz/port && ./gradlew publishToMavenLocal)
+
 ./gradlew build
 ```
 
-The mod jar is in `build/libs/`.
+LevelZ itself is **not** bundled: it is a `compileOnly` dependency (plus `runtimeOnly` in dev runs, so the integration
+can be tested in the IDE). The mod jar is in `build/libs/`.
 
 ## Reporting bugs
 
