@@ -7,6 +7,7 @@ import java.util.Optional;
 import net.medievalweapons.MedievalMain;
 import net.medievalweapons.entity.FranciscaEntity;
 import net.medievalweapons.entity.JavelinEntity;
+import net.medievalweapons.init.CompatInit;
 import net.medievalweapons.init.ItemInit;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -16,7 +17,9 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.ItemSupplier;
+import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.levelgen.Heightmap;
@@ -67,6 +70,24 @@ public final class ServerSmoke {
         CreativeModeTab tab = BuiltInRegistries.CREATIVE_MODE_TAB.getOrThrow(ItemInit.MEDIEVALWEAPONS_ITEM_GROUP);
         tab.buildContents(new CreativeModeTab.ItemDisplayParameters(level.enabledFeatures(), false, server.registryAccess()));
         LOGGER.info("[medievalweapons-port] SERVER_SMOKE_DATA items={} recipes={} creativeTab={}", items, recipes, tab.getDisplayItems().size());
+
+        // Optional integration: the guard in the entities must match the actual mod list, and when LevelZ is present its
+        // BonusHelper#bowBonus(LivingEntity, Projectile) must be the signature LevelZCompat delegates to.
+        boolean levelzBonus = false;
+        if (CompatInit.isLevelZLoaded) {
+            try {
+                Class<?> helper = Class.forName("net.levelz.util.BonusHelper", false, ServerSmoke.class.getClassLoader());
+                helper.getMethod("bowBonus", LivingEntity.class, Projectile.class);
+                levelzBonus = true;
+            } catch (Throwable t) {
+                LOGGER.error("[medievalweapons-port] SERVER_SMOKE_FAIL LevelZ bowBonus", t);
+            }
+        }
+        LOGGER.info("[medievalweapons-port] SERVER_SMOKE_COMPAT levelz={} bowBonus={}",
+                CompatInit.isLevelZLoaded ? "loaded" : "absent", levelzBonus);
+        if (CompatInit.isLevelZLoaded && !levelzBonus) {
+            LOGGER.error("[medievalweapons-port] SERVER_SMOKE_FAIL optional LevelZ integration is not linkable");
+        }
 
         int index = 0;
         for (EntityType<?> type : BuiltInRegistries.ENTITY_TYPE) {

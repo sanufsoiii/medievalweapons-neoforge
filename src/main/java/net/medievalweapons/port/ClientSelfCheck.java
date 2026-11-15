@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import net.medievalweapons.MedievalMain;
+import net.medievalweapons.init.CompatInit;
 import net.medievalweapons.init.ItemInit;
 import net.medievalweapons.init.ParticleInit;
 import net.minecraft.client.Minecraft;
@@ -14,6 +15,8 @@ import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.ItemStack;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -118,8 +121,31 @@ public final class ClientSelfCheck {
         }
         ok &= particle;
 
-        LOGGER.info("[medievalweapons-port] CLIENT_SELF_CHECK {} mixinTargets={}/{} renderers={}/{} itemProperties={} particleProvider={}", ok ? "OK" : "FAIL",
-                loaded, MIXIN_TARGETS.size(), renderers, types, properties, particle);
+        // Optional integration: the levelz guard must match the actual mod list, and when LevelZ is present its
+        // BonusHelper#bowBonus(LivingEntity, Projectile) must be the signature LevelZCompat delegates to.
+        boolean levelzBonus = false;
+        if (CompatInit.isLevelZLoaded) {
+            try {
+                Class<?> helper = Class.forName("net.levelz.util.BonusHelper", false, ClientSelfCheck.class.getClassLoader());
+                helper.getMethod("bowBonus", LivingEntity.class, Projectile.class);
+                levelzBonus = true;
+            } catch (Throwable t) {
+                ok = false;
+                LOGGER.error("[medievalweapons-port] CLIENT_SELF_CHECK_FAIL LevelZ bowBonus", t);
+            }
+        } else {
+            try {
+                Class.forName("net.levelz.util.BonusHelper", false, ClientSelfCheck.class.getClassLoader());
+                ok = false;
+                LOGGER.error("[medievalweapons-port] CLIENT_SELF_CHECK_FAIL LevelZ classes are visible without the mod");
+            } catch (ClassNotFoundException expected) {
+                // The optional dependency is absent: the guarded call sites must not have linked it.
+            }
+        }
+
+        LOGGER.info("[medievalweapons-port] CLIENT_SELF_CHECK {} mixinTargets={}/{} renderers={}/{} itemProperties={} particleProvider={} levelz={} bowBonus={}", ok ? "OK" : "FAIL",
+                loaded, MIXIN_TARGETS.size(), renderers, types, properties, particle,
+                CompatInit.isLevelZLoaded ? "loaded" : "absent", levelzBonus);
     }
 
     private static Field field(Class<?> owner, String name) throws NoSuchFieldException {
