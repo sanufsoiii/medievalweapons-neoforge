@@ -5,8 +5,9 @@ import com.mojang.authlib.GameProfile;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import org.spongepowered.asm.mixin.injection.At;
+
+import com.llamalad7.mixinextras.sugar.Local;
 
 import net.medievalweapons.init.ItemInit;
 import net.minecraft.client.Minecraft;
@@ -24,8 +25,8 @@ public abstract class AbstractClientPlayerEntityMixin extends Player {
         super(world, pos, yaw, gameProfile);
     }
 
-    @Inject(method = "getFieldOfViewModifier", at = @At(value = "TAIL"), locals = LocalCapture.CAPTURE_FAILSOFT, cancellable = true)
-    private void getFovMultiplierMixin(CallbackInfoReturnable<Float> info, float f) {
+    @Inject(method = "getFieldOfViewModifier", at = @At(value = "TAIL"), cancellable = true)
+    private void getFovMultiplierMixin(CallbackInfoReturnable<Float> info, @Local(ordinal = 0) float f) {
         Item item = this.getUseItem().getItem();
         if (this.isUsingItem() && (item == ItemInit.LONG_BOW_ITEM || item == ItemInit.RECURVE_BOW_ITEM)) {
             int i = this.getTicksUsingItem();
