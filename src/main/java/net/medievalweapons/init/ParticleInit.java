@@ -91,7 +91,14 @@ public class ParticleInit {
 
             @Override
             public Particle createParticle(SimpleParticleType type, ClientLevel world, double x, double y, double z, double vX, double vY, double vZ) {
-                return new HealingAuraParticle(world, x, y, z, vX, vY, vZ, sprites);
+                try {
+                    return new HealingAuraParticle(world, x, y, z, vX, vY, vZ, sprites);
+                } catch (IllegalArgumentException e) {
+                    // The particle definition (assets/medievalweapons/particles/healing_aura_particle.json) belongs to the
+                    // original All Rights Reserved assets. Without the original jar the sprite set is empty and
+                    // SpriteSet#get throws; skip the particle instead of crashing the client.
+                    return null;
+                }
             }
         }
     }
